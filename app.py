@@ -88,7 +88,7 @@ with ui.layout_columns():
         style="color: black;"
     ):
         
-        "Current Temperature"
+        "❅ Current Temperature ❅"
 
         @render.text
         def display_temp():
@@ -97,13 +97,13 @@ with ui.layout_columns():
             return f"{latest_dictionary_entry['temp']} C"
 
         # Display message in mail panel
-        "warning frio"
+        "❄️ warning frio ❄️"
 
 # Display current day and time card
 with ui.card(full_screen=True):
     # Customize card header with background color, text, and icon
     ui.card_header(
-        "Current Date and Time",
+        "📅 Current Date and Time",
         style="background-color: green; color: black;",
     )
 
