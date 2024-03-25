@@ -83,8 +83,9 @@ with ui.sidebar(open="open"):
 # Display current temperature in the mail panel
 with ui.layout_columns():
     with ui.value_box(
-        showcase=icon_svg("sun"),
-        theme="bg-gradient-blue-purple",
+        showcase=icon_svg("snowman"),
+        theme="yellow",
+        style="color: black;"
     ):
         
         "Current Temperature"
@@ -96,23 +97,40 @@ with ui.layout_columns():
             return f"{latest_dictionary_entry['temp']} C"
 
         # Display message in mail panel
-        "warmer than usual"
+        "warning frio"
 
-    with ui.card(full_screen=True):
-        ui.card_header("Current Date and Time")
-
-        @render.text
-        def display_time():
-            """Get the latest reading and return a timestamp string"""
-            deque_snapshot, df, latest_dictionary_entry = reactive_calc_combined()
-            return f"{latest_dictionary_entry['timestamp']}"
-
-# Add icon
-icon_svg("github")
-
-#with ui.card(full_screen=True, min_height="40%"):
+# Display current day and time card
 with ui.card(full_screen=True):
-    ui.card_header("Most Recent Readings")
+    # Customize card header with background color, text, and icon
+    ui.card_header(
+        "Current Date and Time",
+        style="background-color: green; color: black;",
+    )
+
+    # Customize card content text color
+    @render.text
+    def display_time():
+        """Get the latest reading and return a timestamp string"""
+        deque_snapshot, df, latest_dictionary_entry = reactive_calc_combined()
+        return f"{latest_dictionary_entry['timestamp']}"
+
+    # Add icon
+    icon_svg("clock")
+
+# Display more recent readings card
+with ui.card(full_screen=True):
+    # Customize card header
+    ui.card_header("📚 Most Recent Readings", style="background-color: blue; color: white;")
+
+    # Define custom card content using layout columns
+    with ui.layout_columns():
+        with ui.card():
+            ui.card_header("🌡️ Temperature Readings", style="background-color: #d1ecf1; color: black;")
+            ui.p("Below are the most recent temperature readings:")
+
+        # Display the DataFrame
+        with ui.card():
+            ui.card_header("📊 Readings Data Table", style="background-color: #d1ecf1; color: black;")
 
     @render.data_frame
     def display_df():
