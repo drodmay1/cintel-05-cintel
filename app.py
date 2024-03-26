@@ -63,32 +63,53 @@ with ui.layout_columns():
     ):
         pass
 
-# Define the UI Layout Sidebar
-with ui.sidebar(open="open"):
+# Define the UI Layout Sidebar with background color
+with ui.sidebar(open="open", style="background-color: lightblue; font-family: 'Comic Sans MS', cursive;"):
     
-    ui.h2("Penguin Climate Monitoring Dashboard", class_="text-center")
+    # Header with two lines
+    with ui.h2(class_="text-center"):
+        ui.div("Penguin Climate", style="font-size: 1.0em;"),
+        ui.div("Monitoring Dashboard", style="font-size: 1.0em;")
+
+    # Add an icon with custom size using CSS
+    ui.div(
+    icon_svg("snowflake"),
+    class_="text-center", 
+    style="color: blue; font-size: 100px",
+    )
     
+    # Description
     ui.p(
-        "A demonstration of real-time temperature readings in Antarctica for penguin habitat monitoring.",
+        "Real-time temperature readings in Antarctica for penguin habitat monitoring.",
         class_="text-center",
     )
-    ui.hr()
+    ui.hr() # Horizontal line for visual separation
+    
+    # Links section
     ui.h6("Links:")
     ui.a(
         "GitHub Source",
         href="https://github.com/drodmay1/cintel-05-cintel",
         target="_blank",
+        style="color: #007bff;",  # Blue color for links
     )
     ui.a(
         "GitHub App",
         href="https://github.com/drodmay1/cintel-05-cintel/blob/main/app.py",
         target="_blank",
+        style="color: #007bff;",  # Blue color for links
     )
-    ui.a("PyShiny", href="https://shiny.posit.co/py/", target="_blank")
+    ui.a(
+        "PyShiny", 
+        href="https://shiny.posit.co/py/", 
+        target="_blank",
+        style="color: #007bff;",  # Blue color for links
+    )
     ui.a(
         "PyShiny Express",
         href="https://shiny.posit.co/blog/posts/shiny-express/",
         target="_blank",
+        style="color: #007bff;",  # Blue color for links
     )
 
 # Display current temperature in the main panel
