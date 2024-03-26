@@ -50,15 +50,26 @@ def reactive_calc_combined():
     return deque_snapshot, df, latest_dictionary_entry
     
 # Define the Shiny UI Page layout, set the title
-ui.page_opts(title="PyShiny Express: Live Data (Basic)", fillable=True)
+ui.page_opts(title="PyShiny Express: Penguin Climate Monitoring", fillable=True)
+
+# Display icon and title in the main panel
+with ui.layout_columns():
+    with ui.value_box(
+        title="❅ Penguin Climate Monitoring Dashboard",
+        showcase=icon_svg("snowman"),
+        theme="yellow",
+        style="color: black;",
+        value="",
+    ):
+        pass
 
 # Define the UI Layout Sidebar
 with ui.sidebar(open="open"):
     
-    ui.h2("Antarctic Explorer", class_="text-center")
+    ui.h2("Penguin Climate Monitoring Dashboard", class_="text-center")
     
     ui.p(
-        "A demonstration of real-time temperature readings in Antarctica.",
+        "A demonstration of real-time temperature readings in Antarctica for penguin habitat monitoring.",
         class_="text-center",
     )
     ui.hr()
@@ -80,10 +91,10 @@ with ui.sidebar(open="open"):
         target="_blank",
     )
 
-# Display current temperature in the mail panel
+# Display current temperature in the main panel
 with ui.layout_columns():
     with ui.value_box(
-        showcase=icon_svg("snowman"),
+        showcase=icon_svg("snowflake"),
         theme="yellow",
         style="color: black;"
     ):
@@ -96,15 +107,15 @@ with ui.layout_columns():
             deque_snapshot, df, latest_dictionary_entry = reactive_calc_combined()
             return f"{latest_dictionary_entry['temp']} C"
 
-        # Display message in mail panel
-        "❄️ warning frio ❄️"
+        # Display message in main panel
+        "❄️ Penguin Habitat Temperature ❄️"
 
 # Display current day and time card
 with ui.card(full_screen=True):
     # Customize card header with background color, text, and icon
     ui.card_header(
         "📅 Current Date and Time",
-        style="background-color: green; color: black;",
+        style="background-color: blue; color: white;",
     )
 
     # Customize card content text color
@@ -139,47 +150,30 @@ with ui.card(full_screen=True):
         pd.set_option('display.width', None)        # Use maximum width
         return render.DataGrid( df,width="100%")
 
+# Display the chart with current trend
 with ui.card():
     ui.card_header("Chart with Current Trend")
 
+    # Initialize an empty figure
+    fig = px.line(title="Temperature Trend Over Time", labels={"temp": "Temperature (°C)", "timestamp": "Time"})
+
     @render_plotly
     def display_plot():
-        # Fetch from the reactive calc function
+        # Fetch data from the reactive calc function
         deque_snapshot, df, latest_dictionary_entry = reactive_calc_combined()
 
-        # Ensure the DataFrame is not empty before plotting
+        # Ensure the DataFrame is not empty before updating the plot
         if not df.empty:
             # Convert the 'timestamp' column to datetime for better plotting
             df["timestamp"] = pd.to_datetime(df["timestamp"])
 
-            # Create scatter plot for readings
-            # pass in the df, the name of the x column, the name of the y column,
-            # and more
-        
-            fig = px.scatter(df,
-            x="timestamp",
-            y="temp",
-            title="Temperature Readings with Regression Line",
-            labels={"temp": "Temperature (°C)", "timestamp": "Time"},
-            color_discrete_sequence=["blue"] )
-            
-            # Linear regression - we need to get a list of the
-            # Independent variable x values (time) and the
-            # Dependent variable y values (temp)
-            # then, it's pretty easy using scipy.stats.linregress()
+            # Add trace for temperature data
+            fig.add_scatter(x=df["timestamp"], y=df["temp"], mode="lines", name="Temperature")
 
-            # For x let's generate a sequence of integers from 0 to len(df)
-            sequence = range(len(df))
-            x_vals = list(sequence)
-            y_vals = df["temp"]
-
-            slope, intercept, r_value, p_value, std_err = stats.linregress(x_vals, y_vals)
-            df['best_fit_line'] = [slope * x + intercept for x in x_vals]
-
-            # Add the regression line to the figure
-            fig.add_scatter(x=df["timestamp"], y=df['best_fit_line'], mode='lines', name='Regression Line')
+            # Configure animation settings
+            fig.update_layout(updatemenus=[dict(type="buttons", showactive=False, buttons=[dict(label="Play", method="animate", args=[None, {"fromcurrent": True}]),])])
 
             # Update layout as needed to customize further
-            fig.update_layout(xaxis_title="Time",yaxis_title="Temperature (°C)")
+            fig.update_layout(xaxis_title="Time", yaxis_title="Temperature (°C)")
 
         return fig
