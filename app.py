@@ -8,6 +8,8 @@ import pandas as pd
 import plotly.express as px
 from shinywidgets import render_plotly
 from scipy import stats
+from ipyleaflet import Map
+from shinywidgets import render_widget
 
 # import icons
 from faicons import icon_svg
@@ -198,3 +200,11 @@ with ui.card():
             fig.update_layout(xaxis_title="Time", yaxis_title="Temperature (°C)")
 
         return fig
+
+ui.h2("Antarctica Map")
+
+
+@render_widget
+def map():
+    return Map(center=(-70, -50), zoom=1
+              )
